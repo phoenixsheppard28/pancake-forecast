@@ -7,12 +7,25 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import uvicorn
 import os
+from fastapi.middleware.cors import CORSMiddleware
+
+
+
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
 assert(API_KEY != None)
 
 app=FastAPI()
 # cron job once per day that shifts the dates to check or rather just refetches the endpoint and updates the website 
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://umpancake.vercel.app"],  # Add your frontend URL
+    allow_credentials=True,
+    allow_methods=["GET"],
+    allow_headers=["GET"],
+)
 
 DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
                        "east-quad","north-quad","south-quad","twigs-at-oxford",
@@ -22,6 +35,7 @@ DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
 
 @app.get("/forecast")
 async def get_forecast(x_api_key:str = Header(...)):
+    print(API_KEY)
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
    
