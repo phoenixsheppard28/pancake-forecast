@@ -64,4 +64,7 @@ async def get_forecast(x_api_key:str):
                 print("none found")
                 
     return pancake_map
-            
+
+if __name__ != "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
