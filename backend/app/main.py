@@ -1,12 +1,16 @@
 from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi.responses import JSONResponse
 from typing import Final
 from datetime import datetime,timedelta
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 
+API_KEY = load_dotenv("API_KEY")
+assert(API_KEY != None)
 
 app=FastAPI()
-# cron job once per day that shifts the dates to check 
+# cron job once per day that shifts the dates to check or rather just refetches the endpoint and updates the website 
 
 DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
                        "east-quad","north-quad","south-quad","twigs-at-oxford",
@@ -15,11 +19,17 @@ DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
 
 
 @app.get("/forecast")
-async def get_forecast():
-    pancake_map={}
+async def get_forecast(x_api_key:str):
+    if(x_api_key!=API_KEY):
+        return JSONResponse(content="Invalid or none API Key",status_code=401)
+   
+    pancake_map={
+        (datetime.today()+timedelta(i)).strftime("%Y-%m-%d"):[]
+        for i in range(7)
+    }
 
     for i in range(7):
-        today = datetime.today() + timedelta(i) - timedelta(2)
+        today = datetime.today() + timedelta(i)
         formatted_date = today.strftime("%Y-%m-%d")
 
         for hall in DINING_HALLS:
@@ -39,12 +49,19 @@ async def get_forecast():
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
             }
             r = requests.get(f"https://dining.umich.edu/menus-locations/dining-halls/{hall}/?menuDate={formatted_date}",params=params)
-
             soup = BeautifulSoup(r.text,"lxml")
             divs = soup.find_all("div",class_="item-name")
             pancake_div = next((div for div in divs if "pancakes" in div.text.lower()), None)
+            
             if(pancake_div):
-                print(pancake_div)
+                info = {
+                    "hall":hall,
+                    "pancake":str(pancake_div.text).strip() 
+                }
+                pancake_map[formatted_date].append(info)
+                print(info)
             else:
                 print("none found")
+                
+    return pancake_map
             
