@@ -66,11 +66,15 @@ async def get_forecast(x_api_key:str = Header(...)):
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
             }
             r = requests.get(f"https://dining.umich.edu/menus-locations/dining-halls/{hall}/?menuDate={formatted_date}",params=params)
+            if(r.status_code!=200):
+                return JSONResponse(content="Error fetching data from dining hall",status_code=500)
+            
             soup = BeautifulSoup(r.text,"lxml")
             divs = soup.find_all("div",class_="item-name")
-            pancake_div = next((div for div in divs if "pancakes" in div.text.lower()), None)
+            print("hi")
+            pancake_div = next((div for div in divs if "pancakes" in str(div.text).lower()), None)
             print("step3")
-            if(pancake_div):
+            if(pancake_div!=None):
                 info = {
                     "hall":hall,
                     "pancake":str(pancake_div.text).strip() 
