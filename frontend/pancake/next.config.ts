@@ -5,11 +5,11 @@ const nextConfig: NextConfig = {
         return [
             {
                 source: "/api/pancake-data-first",
-                destination: "https://umpancake-backend.vercel.app/forecast-first-half",
+                destination: "https://umpancake-backend.vercel.app/forecast-1",
             },
             {
                 source: "/api/pancake-data-second",
-                destination: "https://umpancake-backend.vercel.app/forecast-second-half",
+                destination: "https://umpancake-backend.vercel.app/forecast-2",
             },
         ];
     },
