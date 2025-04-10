@@ -39,17 +39,18 @@ async def get_forecast(x_api_key:str = Header(...)):
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
    
+    print("step 1 ")
     pancake_map={
         (datetime.today()+timedelta(i)).strftime("%Y-%m-%d"):[]
         for i in range(8)
     }
+    print("step 2")
 
     for i in range(8):
         today = datetime.today() + timedelta(i)
         formatted_date = today.strftime("%Y-%m-%d")
 
         for hall in DINING_HALLS:
-            payload ={"menuDate": formatted_date}
             params={
                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
                 'accept-language': 'en-US,en;q=0.9',
@@ -68,7 +69,7 @@ async def get_forecast(x_api_key:str = Header(...)):
             soup = BeautifulSoup(r.text,"lxml")
             divs = soup.find_all("div",class_="item-name")
             pancake_div = next((div for div in divs if "pancakes" in div.text.lower()), None)
-            
+            print("step3")
             if(pancake_div):
                 info = {
                     "hall":hall,
