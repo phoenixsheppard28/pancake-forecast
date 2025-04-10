@@ -24,7 +24,7 @@ app.add_middleware(
     allow_origins=["https://umpancake.vercel.app"],  # Add your frontend URL
     allow_credentials=True,
     allow_methods=["GET"],
-    allow_headers=["GET"],
+    allow_headers=["*"],
 )
 
 DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
@@ -34,7 +34,7 @@ DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
 
 
 @app.get("/forecast-1")
-async def get_forecast(x_api_key:str = Header(...)):
+async def get_forecast_1(x_api_key:str = Header(...)):
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
    
