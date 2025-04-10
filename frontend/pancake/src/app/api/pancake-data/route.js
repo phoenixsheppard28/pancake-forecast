@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const apiResponse = await fetch("https://umpancake-backend.vercel.app/forecast", {
+    const apiResponse = await fetch("/api/pancake-data", {
       headers: {
         "x-api-key": process.env.API_KEY,
       },
