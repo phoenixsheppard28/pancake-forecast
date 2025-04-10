@@ -51,6 +51,7 @@ async def get_forecast(x_api_key:str = Header(...)):
         formatted_date = today.strftime("%Y-%m-%d")
         print("time??")
         for hall in DINING_HALLS:
+            print("loop")
             params={
                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
                 'accept-language': 'en-US,en;q=0.9',
@@ -66,6 +67,7 @@ async def get_forecast(x_api_key:str = Header(...)):
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
             }
             r = requests.get(f"https://dining.umich.edu/menus-locations/dining-halls/{hall}/?menuDate={formatted_date}",params=params)
+            print("has it reached here")
             if(r.status_code!=200):
                 return JSONResponse(content="Error fetching data from dining hall",status_code=500)
             
