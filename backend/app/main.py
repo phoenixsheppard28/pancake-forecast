@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import uvicorn
 import os
-
+load_dotenv()
 API_KEY = os.getenv("API_KEY")
 assert(API_KEY != None)
 
