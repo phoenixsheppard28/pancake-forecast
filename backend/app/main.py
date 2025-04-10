@@ -28,7 +28,7 @@ async def get_forecast(x_api_key:str):
         for i in range(7)
     }
 
-    for i in range(7):
+    for i in range(8):
         today = datetime.today() + timedelta(i)
         formatted_date = today.strftime("%Y-%m-%d")
 
