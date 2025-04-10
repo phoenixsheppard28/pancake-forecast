@@ -4,7 +4,7 @@ export async function GET() {
   try {
     const apiResponse = await fetch("https://umpancake-backend.vercel.app/forecast", {
       headers: {
-        "x_api_key": process.env.API_KEY,
+        "x-api-key": process.env.API_KEY,
       },
     });
 

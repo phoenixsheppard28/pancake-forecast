@@ -2,7 +2,7 @@ export async function fetchPancakeData(): Promise<Record<string, Array<{ hall: s
     try {
       const response = await fetch("/api/pancake-data", {
         headers: {
-          "x_api_key": process.env.API_KEY || "",
+          "x-api-key": process.env.API_KEY || "",
         },
       });
   
