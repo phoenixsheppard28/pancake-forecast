@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Header
 from fastapi.responses import JSONResponse
 from typing import Final
 from datetime import datetime,timedelta
@@ -20,7 +20,7 @@ DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
 
 
 @app.get("/forecast")
-async def get_forecast(x_api_key:str):
+async def get_forecast(x_api_key:str = Header(...)):
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
    

@@ -5,3 +5,14 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: "/api/pancake-data", // Frontend route
+        destination: "https://umpancake-backend.vercel.app/forecast", // Backend route
+      },
+    ];
+  },
+};
