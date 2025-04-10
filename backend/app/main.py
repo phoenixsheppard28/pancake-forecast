@@ -6,8 +6,9 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import uvicorn
+import os
 
-API_KEY = load_dotenv("API_KEY")
+API_KEY = os.getenv("API_KEY")
 assert(API_KEY != None)
 
 app=FastAPI()
