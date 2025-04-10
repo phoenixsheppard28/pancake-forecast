@@ -5,6 +5,7 @@ from datetime import datetime,timedelta
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+import uvicorn
 
 API_KEY = load_dotenv("API_KEY")
 assert(API_KEY != None)
@@ -65,6 +66,5 @@ async def get_forecast(x_api_key:str):
                 
     return pancake_map
 
-if __name__ != "__main__":
-    import uvicorn
+if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
