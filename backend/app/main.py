@@ -35,21 +35,17 @@ DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
 
 @app.get("/forecast")
 async def get_forecast(x_api_key:str = Header(...)):
-    print(API_KEY)
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
    
-    print("step 1 ")
     pancake_map={
         (datetime.today()+timedelta(i)).strftime("%Y-%m-%d"):[]
         for i in range(8)
     }
-    print("step 2")
 
     for i in range(8):
         today = datetime.today() + timedelta(i)
         formatted_date = today.strftime("%Y-%m-%d")
-        print("time??")
         for hall in DINING_HALLS:
             params={
                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -69,22 +65,17 @@ async def get_forecast(x_api_key:str = Header(...)):
             if(r.status_code!=200):
                 return JSONResponse(content="Error fetching data from dining hall",status_code=500)
             
-            print("soup start")
             soup = BeautifulSoup(r.text,"lxml")
-            print("soup middle")
             divs = soup.find_all("div",class_="item-name")
-            print("soup end")
             pancake_div = next((div for div in divs if "pancakes" in str(div.text).lower()), None)
-            print("step3")
             if(pancake_div!=None):
                 info = {
                     "hall":hall,
                     "pancake":str(pancake_div.text).strip() 
                 }
                 pancake_map[formatted_date].append(info)
-                print(info)
             else:
-                print("none found")
+                pass
                 
     return pancake_map
 
