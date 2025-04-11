@@ -1,14 +1,28 @@
+const CACHE_KEY = 'pancake-data-cache';
+const CACHE_DATE_KEY = 'pancake-data-cache-date';
+
 async function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export async function fetchPancakeData() {
     try {
+      // Check if we have cached data from today
+      const today = new Date().toISOString().split('T')[0];
+      const cachedDate = localStorage.getItem(CACHE_DATE_KEY);
+      const cachedData = localStorage.getItem(CACHE_KEY);
+
+      // If we have valid cached data from today, return it
+      if (cachedDate === today && cachedData) {
+        return JSON.parse(cachedData);
+      }
+
+      // If cache is invalid or missing, fetch new data
       const firstHalfResponse = fetch("/api/pancake-data-first", {
           headers: { "x-api-key": process.env.API_KEY || "" }
       });
 
-      await delay(500); // 500ms delay before second request
+      await delay(500);
 
       const secondHalfResponse = fetch("/api/pancake-data-second", {
           headers: { "x-api-key": process.env.API_KEY || "" }
@@ -19,9 +33,23 @@ export async function fetchPancakeData() {
         secondHalfResponse.then(res => res.json()),
       ]);
 
-      return { ...firstHalf, ...secondHalf };
+      const combinedData = { ...firstHalf, ...secondHalf };
+
+      // Cache the new data
+      localStorage.setItem(CACHE_KEY, JSON.stringify(combinedData));
+      localStorage.setItem(CACHE_DATE_KEY, today);
+
+      return combinedData;
     } catch (error) {
       console.error("Error fetching pancake data:", error);
+      
+      // If there's an error but we have cached data, return it as fallback
+      const cachedData = localStorage.getItem(CACHE_KEY);
+      if (cachedData) {
+        console.log('Using cached data as fallback due to fetch error');
+        return JSON.parse(cachedData);
+      }
+      
       throw error;
     }
 }
