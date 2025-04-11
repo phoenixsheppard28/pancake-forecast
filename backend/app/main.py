@@ -49,7 +49,7 @@ async def get_forecast_1(x_api_key:str = Header(...)):
             date = datetime.today() + timedelta(i)
             formatted_date = date.strftime("%Y-%m-%d")
             for hall in DINING_HALLS:
-                async def fetch():
+                async def fetch(hall=hall, formatted_date=formatted_date):
                     params={
                         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
                         'accept-language': 'en-US,en;q=0.9',
@@ -66,10 +66,12 @@ async def get_forecast_1(x_api_key:str = Header(...)):
                     }
                     r = await client.get(f"https://dining.umich.edu/menus-locations/dining-halls/{hall}/?menuDate={formatted_date}", params=params)
                     if r.status_code != 200:
-                        return None
+                        print(r.status_code)
+
                     
                     soup = BeautifulSoup(r.text, "lxml")
                     divs = soup.find_all("div", class_="item-name")
+                    print(hall)
                     pancake_div = next((div for div in divs if "pancakes" in str(div.text).lower()), None)
                     if pancake_div:
                         return {
@@ -108,7 +110,7 @@ async def get_forecast_2(x_api_key:str = Header(...)):
             date = datetime.today() + timedelta(i+4)
             formatted_date = date.strftime("%Y-%m-%d")
             for hall in DINING_HALLS:
-                async def fetch():
+                async def fetch(hall=hall, formatted_date=formatted_date):
                     params={
                         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
                         'accept-language': 'en-US,en;q=0.9',
@@ -125,10 +127,11 @@ async def get_forecast_2(x_api_key:str = Header(...)):
                     }
                     r = await client.get(f"https://dining.umich.edu/menus-locations/dining-halls/{hall}/?menuDate={formatted_date}", params=params)
                     if r.status_code != 200:
-                        return None
+                       print(r.status_code)
                     
                     soup = BeautifulSoup(r.text, "lxml")
                     divs = soup.find_all("div", class_="item-name")
+                    print(hall)
                     pancake_div = next((div for div in divs if "pancakes" in str(div.text).lower()), None)
                     if pancake_div:
                         return {
