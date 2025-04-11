@@ -1,23 +1,20 @@
 {
     "version": 2,
-    "functions": {
+    "builds": [
+      {
+        "src": "app/main.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "app/main.py"
+      }
+    ],
+    "functions":{
         "app/main.py": {
-            "memory": 1024,
             "maxDuration": 60
         }
-    },
-    "routes": [
-        {
-            "src": "/forecast-1",
-            "dest": "app/main.py"
-        },
-        {
-            "src": "/forecast-2",
-            "dest": "app/main.py"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "app/main.py"
-        }
-    ]
-}
+    }
+  }
