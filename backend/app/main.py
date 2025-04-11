@@ -60,36 +60,50 @@ app.add_middleware(
 
 
 
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
 @app.get("/forecast-1")
-async def get_forecast_1(x_api_key:str = Header(...)):
-    if(x_api_key!=API_KEY):
-        return JSONResponse(content="Invalid or none API Key",status_code=401)
-   
-    pancake_map = {
-        (datetime.today()+timedelta(i)).strftime("%Y-%m-%d"): []
-        for i in range(4)
-    }
+async def get_forecast_1(x_api_key: str = Header(...)):
+    if x_api_key != API_KEY:
+        return JSONResponse(content="Invalid or none API Key", status_code=401)
 
-    async with httpx.AsyncClient(
-        timeout=30.0,
-        limits=httpx.Limits(max_keepalive_connections=20, max_connections=50)
-    ) as client:
-        tasks = []
-        for i in range(4):
-            date = datetime.today() + timedelta(i)
-            formatted_date = date.strftime("%Y-%m-%d")
-            for hall in DINING_HALLS:
-                tasks.append(fetch(client=client,hall=hall, formatted_date=formatted_date))
+    try:
+        pancake_map = {
+            (datetime.today() + timedelta(i)).strftime("%Y-%m-%d"): []
+            for i in range(4)
+        }
 
-        results = await asyncio.gather(*tasks)
-        for result in results:
-            if result:
-                pancake_map[result["date"]].append({
-                    "hall": result["hall"],
-                    "pancake": result["pancake"]
-                })
-                    
-    return pancake_map
+        async with httpx.AsyncClient(
+            timeout=30.0,
+            limits=httpx.Limits(max_keepalive_connections=20, max_connections=50)
+        ) as client:
+            tasks = []
+            for i in range(4):
+                date = datetime.today() + timedelta(i)
+                formatted_date = date.strftime("%Y-%m-%d")
+                for hall in DINING_HALLS:
+                    tasks.append(fetch(client=client, hall=hall, formatted_date=formatted_date))
+
+            results = await asyncio.gather(*tasks, return_exceptions=True)  # Catch errors inside asyncio.gather()
+            for result in results:
+                if isinstance(result, Exception):  # Check if an exception occurred
+                    logging.error(f"Error fetching data: {result}")
+                    continue  # Skip this result
+
+                if result:
+                    pancake_map[result["date"]].append({
+                        "hall": result["hall"],
+                        "pancake": result["pancake"]
+                    })
+
+        return pancake_map
+
+    except Exception as e:
+        logging.error(f"Internal Server Error: {e}", exc_info=True)
+        return JSONResponse(content="Internal Server Error", status_code=500)
 
 @app.get("/forecast-2")
 async def get_forecast_2(x_api_key:str = Header(...)):
