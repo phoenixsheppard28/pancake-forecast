@@ -18,20 +18,17 @@ export async function fetchPancakeData() {
       }
 
       // If cache is invalid or missing, fetch new data
-      const firstHalfResponse = fetch("/api/pancake-data-first", {
-          headers: { "x-api-key": process.env.API_KEY || "" }
+      const firstHalfResponse = await fetch("/api/pancake-data-first", {
+          headers: { "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "" }
       });
+      const firstHalf = await firstHalfResponse.json();
 
       await delay(500);
 
-      const secondHalfResponse = fetch("/api/pancake-data-second", {
-          headers: { "x-api-key": process.env.API_KEY || "" }
+      const secondHalfResponse = await fetch("/api/pancake-data-second", {
+          headers: { "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "" }
       });
-
-      const [firstHalf, secondHalf] = await Promise.all([
-        firstHalfResponse.then(res => res.json()),
-        secondHalfResponse.then(res => res.json()),
-      ]);
+      const secondHalf = await secondHalfResponse.json();
 
       const combinedData = { ...firstHalf, ...secondHalf };
 
