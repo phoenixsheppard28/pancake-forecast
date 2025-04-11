@@ -31,7 +31,7 @@ export default function Home() {
 
   // Generate the next 8 days from today
   const generateDates = () => {
-    const today = new Date()
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })
     const dates = []
 
     for (let i = 0; i < 8; i++) {
