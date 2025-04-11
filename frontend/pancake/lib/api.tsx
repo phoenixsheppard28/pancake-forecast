@@ -1,4 +1,3 @@
-import { ca } from "date-fns/locale";
 
 const CACHE_KEY = 'pancake-data-cache';
 const CACHE_DATE_KEY = 'pancake-data-cache-date';
@@ -12,13 +11,14 @@ export async function fetchPancakeData() {
       // Check if localStorage is available (browser environment)
       if (typeof window !== 'undefined') {
         // Check if we have cached data from today
-        const today = new Date().toISOString().split('T')[0];
+        const today = new   Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })
         const cachedDate = localStorage.getItem(CACHE_DATE_KEY);
         const cachedData = localStorage.getItem(CACHE_KEY);
 
         // If we have valid cached data from today, return it
         if (cachedDate === "2025-04-09" && cachedData) {
           console.log(cachedData);
+          console.log(today);
           return JSON.parse(cachedData);
         }
       }
