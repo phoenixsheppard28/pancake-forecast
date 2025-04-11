@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { format, addDays } from "date-fns"
+import { toZonedTime } from 'date-fns-tz'
 import { fetchPancakeData } from "../../lib/api"
 import DateSidebar from "../../components/date-sidebar"
 import PancakeDisplay from "../../components/pancake-display"
@@ -31,17 +32,17 @@ export default function Home() {
 
   // Generate the next 8 days from today
   const generateDates = () => {
-    const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })
+    const today =  toZonedTime(new Date(),"America/New_York");
     const dates = []
 
     for (let i = 0; i < 8; i++) {
       const date = addDays(today, i)
       dates.push({
         dateString: format(date, "yyyy-MM-dd"),
-        display: format(date, "dd/MM/yyyy"),
+        display: format(date, "MM/dd"),
         day: format(date, "EEEE"),
         hasPancakes: Boolean(pancakeData[format(date, "yyyy-MM-dd")]?.length),
-      })
+      })  
     }
 
     return dates

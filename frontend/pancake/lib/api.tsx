@@ -4,15 +4,16 @@ async function delay(ms: number) {
 
 export async function fetchPancakeData() {
     try {
-      const firstHalfResponse = fetch("/api/pancake-data-first", {
-          headers: { "x-api-key": process.env.API_KEY || "" }
-      });
+      const fetchOptions = {
+        headers: { 
+          "x-api-key": process.env.API_KEY || "",
+        },
+        cache: 'force-cache' as RequestCache
+      };
 
-      await delay(500); // 500ms delay before second request
-
-      const secondHalfResponse = fetch("/api/pancake-data-second", {
-          headers: { "x-api-key": process.env.API_KEY || "" }
-      });
+      const firstHalfResponse = fetch("/api/pancake-data-first", fetchOptions);
+      await delay(500);
+      const secondHalfResponse = fetch("/api/pancake-data-second", fetchOptions);
 
       const [firstHalf, secondHalf] = await Promise.all([
         firstHalfResponse.then(res => res.json()),
