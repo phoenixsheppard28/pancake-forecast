@@ -1,3 +1,5 @@
+import { ca } from "date-fns/locale";
+
 const CACHE_KEY = 'pancake-data-cache';
 const CACHE_DATE_KEY = 'pancake-data-cache-date';
 
@@ -15,7 +17,8 @@ export async function fetchPancakeData() {
         const cachedData = localStorage.getItem(CACHE_KEY);
 
         // If we have valid cached data from today, return it
-        if (cachedDate === today && cachedData) {
+        if (cachedDate === "2025-04-09" && cachedData) {
+          console.log(cachedData);
           return JSON.parse(cachedData);
         }
       }
