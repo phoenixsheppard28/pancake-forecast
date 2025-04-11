@@ -20,6 +20,8 @@ DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
 eastern = pytz.timezone("America/Detroit")  
 today = datetime.now(eastern)
 
+cache = {"forecast-1": None, "forecast-2": None} # { "forecast-1": { "data": {...}, "created_date": date } }
+
 app=FastAPI()
 # cron job once per day that shifts the dates to check or rather just refetches the endpoint and updates the website 
 async def fetch(client,hall, formatted_date):
@@ -67,6 +69,9 @@ app.add_middleware(
 async def get_forecast_1(x_api_key:str = Header(...)):
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
+    
+    if(cache["forecast-1"] != None and cache["forecast-1"]["created_date"] == today.strftime("%Y-%m-%d")):
+        return cache["forecast-1"]["data"]
    
     pancake_map = {
         (today+timedelta(i)).strftime("%Y-%m-%d"): []
@@ -91,13 +96,20 @@ async def get_forecast_1(x_api_key:str = Header(...)):
                     "hall": result["hall"],
                     "pancake": result["pancake"]
                 })
-                    
+    cache["forecast-1"] = {
+        "data": pancake_map,
+        "created_date": today.strftime("%Y-%m-%d")
+    } 
     return pancake_map
 
 @app.get("/forecast-2")
 async def get_forecast_2(x_api_key:str = Header(...)):
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
+    
+    if(cache["forecast-2"] != None and cache["forecast-2"]["created_date"] == today.strftime("%Y-%m-%d")):
+        return cache["forecast-2"]["data"]
+    
     pancake_map={
         (today+timedelta(i+4)).strftime("%Y-%m-%d"):[]
         for i in range(4)
@@ -121,5 +133,10 @@ async def get_forecast_2(x_api_key:str = Header(...)):
                     "hall": result["hall"],
                     "pancake": result["pancake"]
                 })
+   
+    cache["forecast-2"] = {
+        "data": pancake_map,
+        "created_date": today.strftime("%Y-%m-%d")
+    }
                     
     return pancake_map
