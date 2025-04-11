@@ -43,7 +43,7 @@ export async function fetchPancakeData() {
 
       // Cache the new data if localStorage is available
       if (typeof window !== 'undefined') {
-        const today = new Date().toISOString().split('T')[0];
+        const today = new   Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" })
         localStorage.setItem(CACHE_KEY, JSON.stringify(combinedData));
         localStorage.setItem(CACHE_DATE_KEY, today);
       }
