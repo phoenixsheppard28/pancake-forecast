@@ -29,12 +29,12 @@ export default function Home() {
     loadData()
   }, [])
 
-  // Generate the next 7 days from today
+  // Generate the next 8 days from today
   const generateDates = () => {
     const today = new Date()
     const dates = []
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       const date = addDays(today, i)
       dates.push({
         dateString: format(date, "yyyy-MM-dd"),

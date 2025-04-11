@@ -15,7 +15,7 @@ interface DateSidebarProps {
 export default function DateSidebar({ dates, selectedDate, onSelectDate }: DateSidebarProps) {
   return (
     <aside className="w-64 bg-amber-700 text-white p-4 flex flex-col">
-      <h2 className="text-xl font-bold mb-6 text-amber-100">Next 7 Days</h2>
+      <h2 className="text-xl font-bold mb-6 text-amber-100">Next 9 Days</h2>
       <div className="space-y-2">
         {dates.map((date) => (
           <button
