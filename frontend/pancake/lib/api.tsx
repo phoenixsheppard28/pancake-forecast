@@ -1,31 +1,27 @@
-export async function fetchPancakeData(): Promise<Record<string, Array<{ hall: string; pancake: string }>>> {
+async function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function fetchPancakeData() {
     try {
-      const [firstHalfResponse, secondHalfResponse] = await Promise.all([
-        fetch("/api/pancake-data-first", {
-            headers: {
-                "x-api-key": process.env.API_KEY || "",
-            },
-        }),
-        fetch("/api/pancake-data-second", {
-            headers: {
-                "x-api-key": process.env.API_KEY || "",
-            },
-        }),
-    ]);
+      const firstHalfResponse = fetch("/api/pancake-data-first", {
+          headers: { "x-api-key": process.env.API_KEY || "" }
+      });
 
-  
-        if (!firstHalfResponse.ok || !secondHalfResponse.ok) {
-          throw new Error(`Failed to fetch pancake data`);
-      }
+      await delay(500); // 500ms delay before second request
 
-      const firstHalf = await firstHalfResponse.json();
-      const secondHalf = await secondHalfResponse.json();
+      const secondHalfResponse = fetch("/api/pancake-data-second", {
+          headers: { "x-api-key": process.env.API_KEY || "" }
+      });
 
-      // Combine the results
+      const [firstHalf, secondHalf] = await Promise.all([
+        firstHalfResponse.then(res => res.json()),
+        secondHalfResponse.then(res => res.json()),
+      ]);
+
       return { ...firstHalf, ...secondHalf };
     } catch (error) {
       console.error("Error fetching pancake data:", error);
       throw error;
     }
-  }
-  
+}
