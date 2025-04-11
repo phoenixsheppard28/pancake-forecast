@@ -74,7 +74,7 @@ async def get_forecast_1(x_api_key:str = Header(...)):
     }
 
     async with httpx.AsyncClient(
-        timeout=30.0,
+        timeout=60,
         limits=httpx.Limits(max_keepalive_connections=20, max_connections=50)
     ) as client:
         tasks = []
@@ -99,12 +99,12 @@ async def get_forecast_2(x_api_key:str = Header(...)):
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
     pancake_map={
-        (datetime.today()+timedelta(i+4)).strftime("%Y-%m-%d"):[]
+        (today+timedelta(i+4)).strftime("%Y-%m-%d"):[]
         for i in range(4)
     }
 
     async with httpx.AsyncClient(
-        timeout=30.0,
+        timeout=60,
         limits=httpx.Limits(max_keepalive_connections=20, max_connections=50)
     ) as client:
         tasks = []
