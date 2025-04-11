@@ -16,7 +16,7 @@ export async function fetchPancakeData() {
         const cachedData = localStorage.getItem(CACHE_KEY);
 
         // If we have valid cached data from today, return it
-        if (cachedDate === "2025-04-09" && cachedData) {
+        if (cachedDate === today && cachedData) {
           console.log(cachedData);
           console.log(today);
           return JSON.parse(cachedData);
@@ -50,7 +50,7 @@ export async function fetchPancakeData() {
 
       return combinedData;
     } catch (error) {
-      console.error("Error fetching pancake data:", error);
+      console.error("Error fetching pancake date, please reload. error:", error);
       
       // If there's an error but we have cached data, return it as fallback
       if (typeof window !== 'undefined') {
