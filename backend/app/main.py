@@ -23,6 +23,7 @@ today = datetime.now(eastern)
 app=FastAPI()
 # cron job once per day that shifts the dates to check or rather just refetches the endpoint and updates the website 
 async def fetch(client,hall, formatted_date):
+        await asyncio.sleep(0.5)
         headers={
             'Cookie':'gwlob=on',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
