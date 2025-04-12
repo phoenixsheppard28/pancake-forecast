@@ -8,19 +8,14 @@ export async function fetchPancakeData() {
         headers: { 
           "x-api-key": process.env.API_KEY || "",
         },
-        cache: 'force-cache' as RequestCache
       };
 
-      const firstHalfResponse = fetch("/api/pancake-data-first", fetchOptions);
-      await delay(500);
-      const secondHalfResponse = fetch("/api/pancake-data-second", fetchOptions);
+      const response = await fetch("/api/pancake-data", fetchOptions);
+     
+      
+      const result = await response.json();
 
-      const [firstHalf, secondHalf] = await Promise.all([
-        firstHalfResponse.then(res => res.json()),
-        secondHalfResponse.then(res => res.json()),
-      ]);
-
-      return { ...firstHalf, ...secondHalf };
+      return result ;
     } catch (error) {
       console.error("Error fetching pancake data:", error);
       throw error;
