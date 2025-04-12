@@ -18,7 +18,6 @@ DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
                        "east-quad","north-quad","south-quad","twigs-at-oxford",
                        "select-access/martha-cook"] # need special access for this one 
 eastern = pytz.timezone("America/Detroit")  
-today = datetime.now(eastern)
 
 cache = {"forecast-1": None, "forecast-2": None} # { "forecast-1": { "data": {...}, "created_date": date } }
 
@@ -69,6 +68,8 @@ app.add_middleware(
 async def get_forecast_1(x_api_key:str = Header(...)):
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
+    today = datetime.now(eastern)
+
     
     if(cache["forecast-1"] != None and cache["forecast-1"]["created_date"] == today.strftime("%Y-%m-%d")):
         return cache["forecast-1"]["data"]
@@ -106,6 +107,8 @@ async def get_forecast_1(x_api_key:str = Header(...)):
 async def get_forecast_2(x_api_key:str = Header(...)):
     if(x_api_key!=API_KEY):
         return JSONResponse(content="Invalid or none API Key",status_code=401)
+    today = datetime.now(eastern)
+
     
     if(cache["forecast-2"] != None and cache["forecast-2"]["created_date"] == today.strftime("%Y-%m-%d")):
         return cache["forecast-2"]["data"]
@@ -138,5 +141,6 @@ async def get_forecast_2(x_api_key:str = Header(...)):
         "data": pancake_map,
         "created_date": today.strftime("%Y-%m-%d")
     }
+    print(cache)
                     
     return pancake_map
