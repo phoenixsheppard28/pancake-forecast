@@ -20,12 +20,11 @@ DINING_HALLS: Final = ["markley","bursley","mosher-jordan",
                        "select-access/martha-cook"] # need special access for this one 
 eastern = pytz.timezone("America/Detroit")  
 
-cache = {"forecast": None} # { "forecast-1": { "data": {...}, "created_date": date } }
+# cache = {"forecast": None} # { "forecast-1": { "data": {...}, "created_date": date } }
 
 app=FastAPI()
 # cron job once per day that shifts the dates to check or rather just refetches the endpoint and updates the website 
 async def fetch(client:aiohttp.ClientSession,hall, formatted_date):
-        await asyncio.sleep(0.5)
         headers={
             'Cookie':'gwlob=on',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -76,8 +75,7 @@ async def get_forecast(x_api_key:str = Header(...)):
     
     today = datetime.now(eastern)
 
-    if(cache["forecast"] != None and cache["forecast"]["created_date"] == today.strftime("%Y-%m-%d")):
-        return cache["forecast"]["data"]
+  
     
     pancake_map={
         (today+timedelta(i)).strftime("%Y-%m-%d"):[]
@@ -101,10 +99,12 @@ async def get_forecast(x_api_key:str = Header(...)):
                     "pancake": result["pancake"]
                 })
    
-    cache["forecast"] = {
-        "data": pancake_map,
-        "created_date": today.strftime("%Y-%m-%d")
-    }
+    now = datetime.now(eastern)
+    midnight = datetime(now.year, now.month, now.day, 0, 0, 0, tzinfo=eastern) + timedelta(days=1)
+    seconds_until_midnight = int((midnight - now).total_seconds())
                     
-    return pancake_map
+    headers = {
+        "Cache-Control": f"s-maxage={seconds_until_midnight}, stale-while-revalidate=3600"
+    }
+    return JSONResponse(content=pancake_map, headers=headers)
     
