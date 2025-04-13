@@ -105,7 +105,7 @@ async def get_forecast(x_api_key:str = Header(...)):
     seconds_until_midnight = int((midnight - now).total_seconds())
                     
     headers = {
-        "Cache-Control": f"s-maxage={seconds_until_midnight}, stale-while-revalidate=3600"
+        "Cache-Control": f"public, s-maxage={seconds_until_midnight}, stale-while-revalidate=3600"
     }
     return JSONResponse(content=pancake_map, headers=headers)
     
