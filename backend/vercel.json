@@ -11,5 +11,13 @@
         "src": "/(.*)",
         "dest": "app/main.py"
       }
+    ],
+  
+      "crons": [
+        {
+        "path": "/api/cron",
+        "schedule": "5 0 * * *"
+      }
     ]
-  }
+}
+  
