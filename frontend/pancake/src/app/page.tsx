@@ -35,7 +35,7 @@ export default function Home() {
     const today =  toZonedTime(new Date(),"America/New_York");
     const dates = []
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 9; i++) {
       const date = addDays(today, i)
       dates.push({
         dateString: format(date, "yyyy-MM-dd"),
