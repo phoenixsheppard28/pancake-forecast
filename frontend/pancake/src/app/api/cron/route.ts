@@ -14,7 +14,7 @@ export async function GET(request:NextRequest) {
         }
 
 
-        const response = await fetch("/api/pancake-data",{
+        const response = await fetch("https://umichpancake.vercel.app/api/pancake-data",{
             headers: {
                 "x-api-key": process.env.API_KEY || ""
             },
