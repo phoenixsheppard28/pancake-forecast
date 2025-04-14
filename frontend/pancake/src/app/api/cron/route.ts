@@ -1,6 +1,7 @@
 // /pages/api/cron/revalidate.ts
 import { NextResponse,NextRequest } from 'next/server'
 
+export const runtime = 'edge';
 
 export async function GET(request:NextRequest) {
     try {
@@ -14,12 +15,11 @@ export async function GET(request:NextRequest) {
         }
 
 
-        const response = await fetch("https://umichpancake.vercel.app/api/pancake-data",{
+        const response = await fetch("https://umpancake-backend.vercel.app/forecast",{
             headers: {
                 "x-api-key": process.env.API_KEY || ""
             },
             cache: 'no-store', // Force fresh data,
-            next: { revalidate: 0 } // Force revalidation,
 
     });
        
