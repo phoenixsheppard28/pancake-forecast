@@ -100,12 +100,14 @@ async def get_forecast(x_api_key:str = Header(...)):
                     "pancake": result["pancake"]
                 })
    
-    now = datetime.now(eastern)
-    midnight = datetime(now.year, now.month, now.day, 0, 0, 0, tzinfo=eastern) + timedelta(days=1)
-    seconds_until_midnight = int((midnight - now).total_seconds())
+    # now = datetime.now(eastern)
+    # midnight = datetime(now.year, now.month, now.day, 0, 0, 0, tzinfo=eastern) + timedelta(days=1)
+    # seconds_until_midnight = int((midnight - now).total_seconds())
                     
-    headers = {
-        "Cache-Control": f"public, s-maxage={seconds_until_midnight}, stale-while-revalidate=3600"
-    }
-    return JSONResponse(content=pancake_map, headers=headers)
+    # headers = {
+    #     "Cache-Control": f"public, s-maxage={seconds_until_midnight}, stale-while-revalidate=3600"
+    # }
+    # return JSONResponse(content=pancake_map, headers=headers)
+    return JSONResponse(content=pancake_map)
+
     
