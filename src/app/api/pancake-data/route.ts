@@ -27,17 +27,20 @@ export async function GET() {
       urls.map(async (url) => {
         const res = await fetch(url, { headers: HEADERS });
         if (!res.ok) {
-          console.log(res.status)
-          return ""
+          console.log(res.status);
+          return "";
         }
         return res.text();
       })
     );
 
-    const groupedByDate: Record<string, Array<{ hall: string; pancake: string }>> = {};
+    const groupedByDate: Record<
+      string,
+      Array<{ hall: string; pancake: string }>
+    > = {};
 
     results.forEach((result, urlIdx) => {
-      if (result.status !== "fulfilled") return;
+      if (result.status !== "fulfilled" || result.value === "") return;
 
       // Map back to hall/date based on request ordering
       const hallIdx = Math.floor(urlIdx / days.length);
