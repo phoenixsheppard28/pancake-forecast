@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { format, addDays } from "date-fns"
 import { toZonedTime } from 'date-fns-tz'
-import { fetchPancakeData } from "../../lib/api"
 import DateSidebar from "../../components/date-sidebar"
 import PancakeDisplay from "../../components/pancake-display"
 
@@ -17,7 +16,7 @@ export default function Home() {
     const loadData = async () => {
       try {
         setLoading(true)
-        const data = await fetchPancakeData()
+        const data = await fetch("/api/pancake-data").then(res => res.json())
         setPancakeData(data)
       } catch (err) {
         setError("Failed to load pancake data. Please try again later.")
