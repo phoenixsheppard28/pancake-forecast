@@ -1,16 +1,29 @@
 import { NextResponse } from "next/server";
+import { HEADERS, BASE_URL, DINING_HALLS } from "@lib/config";
 
 // export const runtime = 'edge';
 export const maxDuration = 60;
 
-export async function GET() {
+export async function GET() { // fix ts
   try {
+    const days = Array.from({ length: 8 }, (_, i) =>
+      new Date(Date.now() + i * 24 * 60 * 60 * 1000)
+        .toLocaleDateString("en-CA", {
+          timeZone: "America/New_York",
+        })
+    );
     
-    const apiResponse = await fetch("https://umpancake-backend.vercel.app/forecast", {
+   
+
+    
+
+
+    
+
+    const apiResponse = await fetch("https://umpancake-backend.vercel.app/forecast", {// need to fix ts 
       headers: {
         "x-api-key": process.env.API_KEY || "",
-      },
-        next: { revalidate: 200 }, // optional for upstream caching if backend is a Next.js route
+      }
       });
 
     if (!apiResponse.ok) {
@@ -29,4 +42,8 @@ export async function GET() {
       { status: 500 }
     );
   }
+
+
+
+  
 }
